@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Explanation Evaluation</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.16.1.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Socratis</a>
+          </div>
+          <ul class="nav navbar-nav navbar-brand">
+            <li><a href="#">About Us</a></li>
+          </ul>
+        </div>
+    </nav>
+
+    <div class="carousel slide" style="min-height: 100%; background: url(); background-repeat: no-repeat; background-size: 100%; padding-top: 11%; padding-bottom: 12%;" data-interval="false" id="main_block"> 
+        <div class="container" id="initial_page">
+            <div class="row">
+                <p class="lead">Sentiment Predictor:</p>
+                <input type="text" name="emotion" placeholder="" value="" id="emotion">
+		<button type="button" onclick="return get_sentiment();">Submit</button>
+            </div>
+            <div class="row" style="display: none" id="emotion_section">
+                <p class="lead">Predicted Sentiment: </p>
+		<p class="lead">Positive: <span id="sentiment_pos"></span></p>
+		<p class="lead">Neutral:  <span id="sentiment_neu"></span></p>
+		<p class="lead">Negative: <span id="sentiment_neg"></span></p>
+		<p class="lead"> Time Elapsed (ms): <span id="time_elapsed"></span></p>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+<script>
+
+
+    function draw_emotions(response){
+
+        var emotions = response['sentiment']; 
+
+        document.getElementById("emotion_section").style.display= "block";
+
+        document.getElementById("sentiment_pos").innerHTML = emotions['pos'];
+	document.getElementById("sentiment_neu").innerHTML = emotions['neu'];
+	document.getElementById("sentiment_neg").innerHTML = emotions['neg'];
+
+    }
+
+
+    function get_sentiment(){
+        var caption = document.getElementById("emotion").value;
+        let formvars = new FormData();
+        formvars.append("caption", caption);
+        
+        function emotion_success_callback(){
+            return function (response){
+                console.log("entered callback");
+                draw_emotions(response);
+            }
+        }
+
+        function emotion_error_callback(){
+            return function (response){
+                console.log("entered callback error");
+                document.getElementById("emotion_section").style.display=block;
+                document.getElementById("sentiment").innerHTML = "Error";
+            }
+        }
+	console.log("sent data");
+        let start = Date.now();
+        upload(formvars, "/get_pred", emotion_success_callback(), emotion_error_callback());
+        let end = Date.now();
+
+        document.getElementById("time_elapsed").innerHTML = end - start;
+
+	return true
+
+    }
+
+    async function upload(formvars, url, callback_success, callback_error){
+
+        let r = await fetch(url, {method: "POST", body: formvars}); 
+        if (r.status==200){
+            console.log("ok");
+            let resp = await r.json();
+            console.log(resp);
+            callback_success(resp);
+        }
+        else{
+            callback_error(r.statusText);
+        }
+
+    }
+    
+</script>
