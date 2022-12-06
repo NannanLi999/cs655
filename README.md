@@ -6,7 +6,7 @@ The web interface and backend should be running until Dec 30th.
 To test the program, log into one of the client, upload client1/client.py and run
 
 ```
-python3 client.py --message [input text].
+python3 client.py --message "input text".
 ```
 
 Replace the [input text] with any sentence that you would like to send.
