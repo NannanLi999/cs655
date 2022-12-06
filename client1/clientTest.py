@@ -4,7 +4,7 @@ import numpy as np
 import json
 from multiprocessing import Pool
 from multiprocessing import freeze_support
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 NUM_EXP=100
 OK=200
@@ -16,8 +16,7 @@ caption=['I\'m tall.','Things are getting better.','Python combines remarkable p
 def run_client(n):
         result = {'lost':None,'status':None,'time':None,'size':None}  
         headers = {'User-Agent': 'Mozilla/5.0'}
-        payload= {'caption':np.random.choice(caption)} 
-        t1=time.time() 
+        payload= {'caption':np.random.choice(caption)}        
         session = requests.Session()
         times=[]
         sizes=[]
@@ -25,6 +24,7 @@ def run_client(n):
         status=LOST
         for _ in range(NUM_EXP):
           try:
+            t1=time.time() 
             response = session.post('http://143.215.216.195:5002/get_pred', headers=headers,data=payload,timeout=1)
             if response.status_code==200:
                 #response = response.json()
@@ -80,6 +80,7 @@ if __name__ == '__main__':
            print("ave rtt: %.2f seconds"%np.mean(rtts))
            print("loss ratio: %.2f"%(num_loss/(num_req*NUM_EXP)))
     names=['RTT','Throughput','Loss']
+    """
     plt.figure()
     for i,y in enumerate([all_rtt,all_tput,all_loss]):
         plt.xlabel('number of clients')
@@ -89,6 +90,7 @@ if __name__ == '__main__':
         plt.tight_layout()
         plt.savefig('./'+names[i]+'.png')
         plt.clf()
+    """
 
 
 
