@@ -13,7 +13,6 @@ Replace the [input text] with any sentence that you would like to send.
 
 To reproduce our experiments, log into one of the client, upload client1/clientTest.py and run
 ```
-
 python3 clientTest.py
 ```
 
