@@ -1,5 +1,5 @@
 
-Please use the rspec file to setup the encironment, log into each node and copy the corresponding files to the node. Use script.sh in each folder to install the required dependencies for each node.
+Please use the rspec file to setup the environment, log into each node and copy the corresponding files to the node. Use script.sh in each folder to install the required dependencies for each node.
 
 The web interface and backend should be running until Dec 30th.
 
